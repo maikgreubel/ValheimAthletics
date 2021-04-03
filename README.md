@@ -16,4 +16,4 @@ Remove the files ValheimAthletics.dll and the assets/German.lng, assets/English.
 
 As mentioned above, the basic work has been done by spacechase0. I used the already done work and changed the behaviour of gaining skill progress, which was bit "unatural".
 
-The progress is now postponed to a defined time span of of 5 seconds. You have to overweight carry goods to gain or 
+The progress is now postponed to a defined time span of of 5 seconds. You have to overweight carry goods or pulling a wagon to gain progress in order to raise level.
