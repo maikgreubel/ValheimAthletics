@@ -1,7 +1,10 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using HarmonyLib;
+using ModConfigEnforcer;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using ValheimAthletics.Util;
@@ -11,10 +14,12 @@ namespace ValheimAthletics
     /**
      * This class provides the basic mod. It derives from BaseUnityPlugin so uses unity callbacks.
      **/
-    [BepInPlugin("ValheimAthletics.Skill", "ValheimAthleticsSkill", "1.0.0.0")]
+    [BepInPlugin("ValheimAthletics.Skill", ModName, "1.0.1")]
     [BepInProcess("valheim.exe")]
     class Mod : BaseUnityPlugin
     {
+        // The name of mod
+        public const string ModName = "ValheimAthleticsSkill";
         // The mod identifier
         public const string ID = "ValheimAthletics.Skill";
         // The numeric mod identifier
@@ -23,14 +28,16 @@ namespace ValheimAthletics
         public static Skills.SkillType ValheimAthleticsSkill = (Skills.SkillType)Mod.ValheimAthleticsSkillId;
         // The skill definitions
         public static Skills.SkillDef ValheimAthleticsSkillDef;
+
+        private Harmony harmony;
         
-        // Property which controls the level raise interval
+        // Default value of level raise interval
         private const float SKILL_RAISE_INTERVAL = 0.015f;
-        // Property to define the minimum distance to move based on vector
+        // Default value of magnitude of vector
         private const float MIN_MOVE_DIRECTION_MAGNITUDE = 0.1f;
-        // The lower bound stamina value where leveling is not possible
+        // Default value of lower bound of stamina left
         private const float MIN_STAMINA = 0.0f;
-        // The minimum number of seconds between level raise
+        // Default value of seconds between raises
         private const int MIN_TIME_DIFF_SECONDS = 5;
 
         // When the counter starts
@@ -38,6 +45,15 @@ namespace ValheimAthletics
 
         private static bool pullingVagon = false;
         public static bool PullingVagon { get { return pullingVagon; } set { pullingVagon = value; } }
+
+        // Property which controls the level raise interval
+        private ConfigEntry<float> SkillRaiseInterval;
+        // Property to define the minimum distance to move based on vector
+        private ConfigEntry<float> MinimumMoveDirectionMagnitude;
+        // The lower bound stamina value where leveling is not possible
+        private ConfigEntry<float> MinimumStamina;
+        // The minimum number of seconds between level raise
+        private ConfigEntry<int> MinimumTimeDifferenceInSeconds;
 
         /**
          * <summary>
@@ -47,16 +63,24 @@ namespace ValheimAthletics
          **/
         public void Awake()
         {
-            Data.ModId = ID;
-            Data.Folder = Path.GetDirectoryName(this.Info.Location);
-            Log.Logging = BepInEx.Logging.Logger.CreateLogSource(Data.ModId);
+            InitConfig();
+
+            InitUtil();
+
+            InitSkill();
+
+            harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), Mod.ID);
+        }
+
+        private void InitSkill()
+        {
             Texture2D texture = Data.LoadTextureFromAssets("skill_athletics.png");
-            
-            Sprite sprite = Sprite.Create(texture, 
+
+            Sprite sprite = Sprite.Create(texture,
                 new Rect(
                     0.0f,
-                    0.0f, 
-                    (float)((Texture)texture).width, 
+                    0.0f,
+                    (float)((Texture)texture).width,
                     (float)((Texture)texture).height),
                 new Vector2(0.5f, 0.5f)
             );
@@ -68,7 +92,34 @@ namespace ValheimAthletics
                 m_description = Localizer.Instance.Translate("skill_900_description"),
                 m_increseStep = 1.0f
             };
-            new Harmony(ID).PatchAll();
+        }
+
+        private void InitUtil()
+        {
+            Data.ModId = ID;
+            Data.Folder = Path.GetDirectoryName(this.Info.Location);
+            Log.Logging = BepInEx.Logging.Logger.CreateLogSource(Data.ModId);
+        }
+
+        private void InitConfig()
+        {
+            ConfigManager.RegisterMod(ModName, Config);
+
+            MinimumStamina = Config.Bind<float>("Config", "MinimumStamina", MIN_STAMINA, "The lower bound stamina value where leveling is not possible");
+            MinimumMoveDirectionMagnitude = Config.Bind<float>("Config", "MinimumMoveDirectionMagnitude", MIN_MOVE_DIRECTION_MAGNITUDE, "Property to define the minimum distance to move based on vector");
+            MinimumTimeDifferenceInSeconds = Config.Bind<int>("Config", "MinimumTimeDifferenceInSeconds", MIN_TIME_DIFF_SECONDS, "The minimum number of seconds between level raise");
+            SkillRaiseInterval = Config.Bind<float>("Config", "SkillRaiseInterval", SKILL_RAISE_INTERVAL, "Property which controls the level raise interval");
+        }
+
+        /**
+         * <summary>Callback which will executed on exit of game.</summary>
+         **/
+        private void OnDestroy()
+        {
+            if(harmony != null)
+            {
+                harmony.UnpatchAll(Mod.ID);
+            }
         }
 
         /**
@@ -82,9 +133,9 @@ namespace ValheimAthletics
          * First it is checked, whether or not the player moves during physically demanding.<br/>
          * In case of it is true for the first time after non demanding phase, the start counter will be set to current time.<br/>
          * When its not the first time, the start counter will be subtracted from current time to find difference as time span.<br/>
-         * If the time span reached a defined threshed of <see cref="MIN_TIME_DIFF_SECONDS"/> and there is stamina of higher than<br/>
-         * <see cref="MIN_STAMINA"/> as well moving arround which is detected by checking the move direction magnitude higher than<br/>
-         * <see cref="MIN_MOVE_DIRECTION_MAGNITUDE"/>, the athletic skill level is raised using <see cref="SKILL_RAISE_INTERVAL"/>.
+         * If the time span reached a defined threshed of <see cref="MinimumTimeDifferenceInSeconds"/> and there is stamina of higher than<br/>
+         * <see cref="MinimumStamina"/> as well moving arround which is detected by checking the move direction magnitude higher than<br/>
+         * <see cref="MinimumMoveDirectionMagnitude"/>, the athletic skill level is raised using <see cref="SkillRaiseInterval"/>.
          * </remarks>
          **/
         public void FixedUpdate()
@@ -105,13 +156,13 @@ namespace ValheimAthletics
                 return;
             }
 
-            if (now.Value.Subtract(StartOfCounting.Value).TotalSeconds > MIN_TIME_DIFF_SECONDS &&
-                localPlayer.GetMoveDir().magnitude > MIN_MOVE_DIRECTION_MAGNITUDE && 
-                localPlayer.GetStamina() > MIN_STAMINA)
+            if (now.Value.Subtract(StartOfCounting.Value).TotalSeconds > MinimumTimeDifferenceInSeconds.Value &&
+                localPlayer.GetMoveDir().magnitude > MinimumMoveDirectionMagnitude.Value && 
+                localPlayer.GetStamina() > MinimumStamina.Value)
             {
                 StartOfCounting = now;
                 Task.Run(() => {
-                    localPlayer.RaiseSkill(Mod.ValheimAthleticsSkill, SKILL_RAISE_INTERVAL);
+                localPlayer.RaiseSkill(Mod.ValheimAthleticsSkill, SkillRaiseInterval.Value);
                 });
             }
         }
