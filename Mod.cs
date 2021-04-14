@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
+using ValheimAthletics.Patches;
 using ValheimAthletics.Util;
 
 namespace ValheimAthletics
@@ -39,6 +40,8 @@ namespace ValheimAthletics
         private const float MIN_STAMINA = 0.0f;
         // Default value of seconds between raises
         private const int MIN_TIME_DIFF_SECONDS = 5;
+        // Default value of factor multiplying level to add to current max carry weight
+        private const float MAX_CARRY_WEIGHT_FACTOR = 2.0f;
 
         // When the counter starts
         private static DateTime? StartOfCounting = null;
@@ -54,6 +57,8 @@ namespace ValheimAthletics
         private ConfigEntry<float> MinimumStamina;
         // The minimum number of seconds between level raise
         private ConfigEntry<int> MinimumTimeDifferenceInSeconds;
+        // The factor multiplying on level to add to current max carry weight
+        private ConfigEntry<float> MaxCarryWeightFactor;
 
         /**
          * <summary>
@@ -68,6 +73,8 @@ namespace ValheimAthletics
             InitUtil();
 
             InitSkill();
+
+            ModifyCarryWeightPatch.MaxCarryWeightFactor = MaxCarryWeightFactor.Value;
 
             harmony = Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), Mod.ID);
         }
@@ -109,6 +116,7 @@ namespace ValheimAthletics
             MinimumMoveDirectionMagnitude = Config.Bind<float>("Config", "MinimumMoveDirectionMagnitude", MIN_MOVE_DIRECTION_MAGNITUDE, "Property to define the minimum distance to move based on vector");
             MinimumTimeDifferenceInSeconds = Config.Bind<int>("Config", "MinimumTimeDifferenceInSeconds", MIN_TIME_DIFF_SECONDS, "The minimum number of seconds between level raise");
             SkillRaiseInterval = Config.Bind<float>("Config", "SkillRaiseInterval", SKILL_RAISE_INTERVAL, "Property which controls the level raise interval");
+            MaxCarryWeightFactor = Config.Bind<float>("Config", "MaxCarryWeightFactor", MAX_CARRY_WEIGHT_FACTOR, "Property which controls the factor for multiplying on skill to add to max carry weight");
         }
 
         /**

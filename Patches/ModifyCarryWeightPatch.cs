@@ -8,7 +8,7 @@ namespace ValheimAthletics.Patches
     [HarmonyPatch(typeof(Player), "GetMaxCarryWeight")]
     public static class ModifyCarryWeightPatch
     {
-        private const float MAX_CARRY_WEIGHT_FACTOR = 2.0f;
+        public static float MaxCarryWeightFactor;
 
         /**
          * <summary>Modifies the maximum carry weight of given <see cref="Player"/> idenfied by <paramref name="__instance"/> by manipulating the value represented by <paramref name="__result"/>.</summary>
@@ -19,7 +19,7 @@ namespace ValheimAthletics.Patches
                 Mod.ValheimAthleticsSkill
             });
 
-            __result += skill.m_level * MAX_CARRY_WEIGHT_FACTOR;
+            __result += skill.m_level * MaxCarryWeightFactor;
         }
     }
 }
