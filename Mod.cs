@@ -15,7 +15,7 @@ namespace ValheimAthletics
     /**
      * This class provides the basic mod. It derives from BaseUnityPlugin so uses unity callbacks.
      **/
-    [BepInPlugin("ValheimAthletics.Skill", ModName, "1.0.1")]
+    [BepInPlugin("ValheimAthletics.Skill", ModName, "1.0.3")]
     [BepInProcess("valheim.exe")]
     class Mod : BaseUnityPlugin
     {
@@ -110,7 +110,7 @@ namespace ValheimAthletics
 
         private void InitConfig()
         {
-            ConfigManager.RegisterMod(ModName, Config);
+            ConfigManager.RegisterMod(ModName, Config, null);
 
             MinimumStamina = Config.Bind<float>("Config", "MinimumStamina", MIN_STAMINA, "The lower bound stamina value where leveling is not possible");
             MinimumMoveDirectionMagnitude = Config.Bind<float>("Config", "MinimumMoveDirectionMagnitude", MIN_MOVE_DIRECTION_MAGNITUDE, "Property to define the minimum distance to move based on vector");
