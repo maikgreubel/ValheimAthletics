@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Mod.cs" />
@@ -98,6 +99,7 @@
   <ItemGroup>
     <None Include="assets\English.lng" />
     <None Include="assets\German.lng" />
+    <None Include="assets\Portuguese_Brazilian.lng" />
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,7 +15,7 @@ namespace ValheimAthletics
     /**
      * This class provides the basic mod. It derives from BaseUnityPlugin so uses unity callbacks.
      **/
-    [BepInPlugin("ValheimAthletics.Skill", ModName, "1.0.3")]
+    [BepInPlugin("ValheimAthletics.Skill", ModName, "1.0.4")]
     [BepInProcess("valheim.exe")]
     class Mod : BaseUnityPlugin
     {
