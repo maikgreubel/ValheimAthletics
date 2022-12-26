@@ -51,32 +51,25 @@
   <ItemGroup />
   <ItemGroup>
     <Reference Include="0Harmony20">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\BepInEx\core\0Harmony20.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\Users\greub\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Default\BepInEx\core\0Harmony20.dll</HintPath>
     </Reference>
-    <Reference Include="assembly_guiutils_publicized">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\valheim_Data\Managed\publicized_assemblies\assembly_guiutils_publicized.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="assembly_guiutils">
+      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_guiutils.dll</HintPath>
     </Reference>
-    <Reference Include="assembly_utils_publicized">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\valheim_Data\Managed\publicized_assemblies\assembly_utils_publicized.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="assembly_utils">
+      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_utils.dll</HintPath>
     </Reference>
-    <Reference Include="assembly_valheim_publicized">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\valheim_Data\Managed\publicized_assemblies\assembly_valheim_publicized.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="assembly_valheim">
+      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\BepInEx\core\BepInEx.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\Users\greub\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Default\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\BepInEx\core\BepInEx.Harmony.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\Users\greub\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Default\BepInEx\core\BepInEx.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="ModConfigEnforcer">
-      <HintPath>..\..\..\Spiele\Steam\steamapps\common\Valheim\BepInEx\plugins\ModConfigEnforcer.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\Users\greub\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Valheim\profiles\Default\BepInEx\plugins\ModConfigEnforcer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">

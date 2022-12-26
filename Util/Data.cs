@@ -17,7 +17,7 @@ namespace ValheimAthletics.Util
         /**
          * <summary>Retrieve the path to mod data file storage as string.</summary>
          **/
-        public static string GetModDataPath(this PlayerProfile profile) => Path.Combine(Utils.GetSaveDataPath(), "ModData", Data.ModId, "char_" + profile.GetFilename());
+        public static string GetModDataPath(this PlayerProfile profile) => Path.Combine(Utils.GetSaveDataPath(FileHelpers.FileSource.Auto), "ModData", Data.ModId, "char_" + profile.GetFilename());
 
         /**
          * <summary>Reterieve arbitrary data from <see cref="PlayerProfile"/>.</summary>
